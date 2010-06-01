@@ -34,6 +34,8 @@ namespace SubSonic.Repository
             _db = db;
         }
 
+        // TODO: Evil!
+        private readonly DataMapper Mapper = new DataMapper();
 
         #region IRepository<T> Members
 
@@ -55,11 +57,13 @@ namespace SubSonic.Repository
         {
             var qry = _db.Select.From(GetTable()).Where(column).IsEqualTo(value);
             bool loaded = false;
+
             using(var rdr = qry.ExecuteReader())
             {
                 if(rdr.Read())
                 {
-                    rdr.Load(item,null);//mike added null as ColumnNames not known
+                    Mapper.Load(rdr, item, null);
+                    //rdr.Load(item, null);//mike added null as ColumnNames not known
                     loaded = true;
                 }
                 rdr.Dispose();
@@ -82,7 +86,8 @@ namespace SubSonic.Repository
             {
                 if(rdr.Read())
                 {
-                    rdr.Load(item,null);//mike added null as ColumnNames not known
+                    Mapper.Load(rdr, item, null);
+                    //rdr.Load(item, null);//mike added null as ColumnNames not known
                     loaded = true;
                 }
                 rdr.Dispose();

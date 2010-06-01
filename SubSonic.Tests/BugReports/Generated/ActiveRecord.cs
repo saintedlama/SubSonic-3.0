@@ -25,7 +25,9 @@ namespace SouthWind
     /// </summary>
     public partial class Category: IActiveRecord
     {
-    
+        // TODO: Evil!
+        private readonly DataMapper Mapper = new DataMapper();
+
         #region Built-in testing
         static TestRepository<Category> _testRepo;
         
@@ -489,7 +491,8 @@ namespace SouthWind
             if (rdr.Read()) {
 
                 try {
-                    rdr.Load(this);
+                    Mapper.Load(rdr, this);
+                    //rdr.Load(this);
                     SetIsNew(false);
                     SetIsLoaded(true);
                 } catch {
@@ -513,7 +516,9 @@ namespace SouthWind
     /// </summary>
     public partial class Customer: IActiveRecord
     {
-    
+        // TODO: Evil!
+        private readonly DataMapper Mapper = new DataMapper();
+
         #region Built-in testing
         static TestRepository<Customer> _testRepo;
         
@@ -1117,7 +1122,8 @@ namespace SouthWind
             if (rdr.Read()) {
 
                 try {
-                    rdr.Load(this);
+                    Mapper.Load(rdr, this);
+                    //rdr.Load(this);
                     SetIsNew(false);
                     SetIsLoaded(true);
                 } catch {
@@ -1141,7 +1147,9 @@ namespace SouthWind
     /// </summary>
     public partial class Shipper: IActiveRecord
     {
-    
+        // TODO: Evil!
+        private readonly DataMapper Mapper = new DataMapper();
+
         #region Built-in testing
         static TestRepository<Shipper> _testRepo;
         
@@ -1586,7 +1594,8 @@ namespace SouthWind
             if (rdr.Read()) {
 
                 try {
-                    rdr.Load(this);
+                    Mapper.Load(rdr, this);
+                    //rdr.Load(this);
                     SetIsNew(false);
                     SetIsLoaded(true);
                 } catch {
@@ -1610,7 +1619,9 @@ namespace SouthWind
     /// </summary>
     public partial class Supplier: IActiveRecord
     {
-    
+        // TODO: Evil!
+        private readonly DataMapper Mapper = new DataMapper();
+
         #region Built-in testing
         static TestRepository<Supplier> _testRepo;
         
@@ -2226,7 +2237,8 @@ namespace SouthWind
             if (rdr.Read()) {
 
                 try {
-                    rdr.Load(this);
+                    Mapper.Load(rdr, this);
+                    //rdr.Load(this);
                     SetIsNew(false);
                     SetIsLoaded(true);
                 } catch {
@@ -2250,7 +2262,9 @@ namespace SouthWind
     /// </summary>
     public partial class Order: IActiveRecord
     {
-    
+        // TODO: Evil!
+        private readonly DataMapper Mapper = new DataMapper();
+
         #region Built-in testing
         static TestRepository<Order> _testRepo;
         
@@ -2940,7 +2954,8 @@ namespace SouthWind
             if (rdr.Read()) {
 
                 try {
-                    rdr.Load(this);
+                    Mapper.Load(rdr, this);
+                    //rdr.Load(this);
                     SetIsNew(false);
                     SetIsLoaded(true);
                 } catch {
@@ -2964,7 +2979,9 @@ namespace SouthWind
     /// </summary>
     public partial class Product: IActiveRecord
     {
-    
+        // TODO: Evil!
+        private readonly DataMapper Mapper = new DataMapper();
+
         #region Built-in testing
         static TestRepository<Product> _testRepo;
         
@@ -3566,7 +3583,8 @@ namespace SouthWind
             if (rdr.Read()) {
 
                 try {
-                    rdr.Load(this);
+                    Mapper.Load(rdr, this);
+                    //rdr.Load(this);
                     SetIsNew(false);
                     SetIsLoaded(true);
                 } catch {
@@ -3590,7 +3608,9 @@ namespace SouthWind
     /// </summary>
     public partial class OrderDetail: IActiveRecord
     {
-    
+        // TODO: Evil!
+        private readonly DataMapper Mapper = new DataMapper();
+
         #region Built-in testing
         static TestRepository<OrderDetail> _testRepo;
         
@@ -4085,7 +4105,8 @@ namespace SouthWind
             if (rdr.Read()) {
 
                 try {
-                    rdr.Load(this);
+                    Mapper.Load(rdr, this);
+                    //rdr.Load(this);
                     SetIsNew(false);
                     SetIsLoaded(true);
                 } catch {
@@ -4109,7 +4130,9 @@ namespace SouthWind
     /// </summary>
     public partial class CustomerCustomerDemo: IActiveRecord
     {
-    
+        // TODO: Evil!
+        private readonly DataMapper Mapper = new DataMapper();
+
         #region Built-in testing
         static TestRepository<CustomerCustomerDemo> _testRepo;
         
@@ -4542,7 +4565,8 @@ namespace SouthWind
             if (rdr.Read()) {
 
                 try {
-                    rdr.Load(this);
+                    Mapper.Load(rdr, this);
+                    //rdr.Load(this);
                     SetIsNew(false);
                     SetIsLoaded(true);
                 } catch {
@@ -4566,7 +4590,9 @@ namespace SouthWind
     /// </summary>
     public partial class CustomerDemographic: IActiveRecord
     {
-    
+        // TODO: Evil!
+        private readonly DataMapper Mapper = new DataMapper();
+
         #region Built-in testing
         static TestRepository<CustomerDemographic> _testRepo;
         
@@ -4987,7 +5013,8 @@ namespace SouthWind
             if (rdr.Read()) {
 
                 try {
-                    rdr.Load(this);
+                    Mapper.Load(rdr, this);
+                    //rdr.Load(this);
                     SetIsNew(false);
                     SetIsLoaded(true);
                 } catch {
@@ -5011,7 +5038,9 @@ namespace SouthWind
     /// </summary>
     public partial class Region: IActiveRecord
     {
-    
+        // TODO: Evil!
+        private readonly DataMapper Mapper = new DataMapper();
+
         #region Built-in testing
         static TestRepository<Region> _testRepo;
         
@@ -5437,7 +5466,8 @@ namespace SouthWind
             if (rdr.Read()) {
 
                 try {
-                    rdr.Load(this);
+                    Mapper.Load(rdr, this);
+                    //rdr.Load(this);
                     SetIsNew(false);
                     SetIsLoaded(true);
                 } catch {
@@ -5461,7 +5491,9 @@ namespace SouthWind
     /// </summary>
     public partial class Territory: IActiveRecord
     {
-    
+        // TODO: Evil!
+        private readonly DataMapper Mapper = new DataMapper();
+
         #region Built-in testing
         static TestRepository<Territory> _testRepo;
         
@@ -5913,7 +5945,8 @@ namespace SouthWind
             if (rdr.Read()) {
 
                 try {
-                    rdr.Load(this);
+                    Mapper.Load(rdr, this);
+                    //rdr.Load(this);
                     SetIsNew(false);
                     SetIsLoaded(true);
                 } catch {
@@ -5937,7 +5970,9 @@ namespace SouthWind
     /// </summary>
     public partial class EmployeeTerritory: IActiveRecord
     {
-    
+        // TODO: Evil!
+        private readonly DataMapper Mapper = new DataMapper();
+
         #region Built-in testing
         static TestRepository<EmployeeTerritory> _testRepo;
         
@@ -6375,7 +6410,8 @@ namespace SouthWind
             if (rdr.Read()) {
 
                 try {
-                    rdr.Load(this);
+                    Mapper.Load(rdr, this);
+                    //rdr.Load(this);
                     SetIsNew(false);
                     SetIsLoaded(true);
                 } catch {
@@ -6399,7 +6435,9 @@ namespace SouthWind
     /// </summary>
     public partial class Employee: IActiveRecord
     {
-    
+        // TODO: Evil!
+        private readonly DataMapper Mapper = new DataMapper();
+
         #region Built-in testing
         static TestRepository<Employee> _testRepo;
         
@@ -7153,7 +7191,8 @@ namespace SouthWind
             if (rdr.Read()) {
 
                 try {
-                    rdr.Load(this);
+                    Mapper.Load(rdr, this);
+                    //rdr.Load(this);
                     SetIsNew(false);
                     SetIsLoaded(true);
                 } catch {

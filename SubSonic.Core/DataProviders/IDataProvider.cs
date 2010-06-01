@@ -20,6 +20,7 @@ using System.Reflection;
 using SubSonic.Query;
 using SubSonic.Schema;
 using SubSonic.SqlGeneration.Schema;
+using SubSonic.Linq.Structure;
 
 namespace SubSonic.DataProviders
 {
@@ -58,6 +59,9 @@ namespace SubSonic.DataProviders
         object ExecuteScalar(QueryCommand cmd);
         T ExecuteSingle<T>(QueryCommand cmd) where T : new();
         int ExecuteQuery(QueryCommand cmd);
+
+        IEnumerable<T> Execute<T>(QueryCommand<T> query, object[] paramValues);
+
         ITable FindTable(string tableName);
         ITable FindOrCreateTable<T>() where T : new();
         ITable FindOrCreateTable(Type type);
