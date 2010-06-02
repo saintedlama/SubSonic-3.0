@@ -46,7 +46,12 @@ namespace SubSonic.Repository
         public SimpleRepository(IDataProvider provider, SimpleRepositoryOptions options)
         {
             _provider = provider;
+            
+            // TODO: Hacky!
+            _provider.Mapper.OnItemCreated(x => { });
+
             _options = options;
+
             if (_options.Contains(SimpleRepositoryOptions.RunMigrations))
                 migrated = new List<Type>();
         }

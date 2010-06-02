@@ -21,6 +21,7 @@ using SubSonic.Query;
 using SubSonic.Schema;
 using SubSonic.SqlGeneration.Schema;
 using SubSonic.Linq.Structure;
+using SubSonic.Repository;
 
 namespace SubSonic.DataProviders
 {
@@ -46,12 +47,14 @@ namespace SubSonic.DataProviders
         /// Holds list of tables, views, stored procedures, etc.
         /// </summary>
         IDatabaseSchema Schema { get; set; }
-
+        
         ISchemaGenerator SchemaGenerator { get; }
         string ParameterPrefix { get; }
         DbConnection CurrentSharedConnection { get; }
         string ConnectionString { get; }
         DbProviderFactory Factory { get; }
+        DataMapper Mapper { get; }
+
         ITable GetTableFromDB(string tableName);
         DbDataReader ExecuteReader(QueryCommand cmd);
         DataSet ExecuteDataSet(QueryCommand cmd);
