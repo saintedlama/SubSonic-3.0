@@ -181,7 +181,11 @@ namespace SubSonic.Repository
                 var arItem = (IActiveRecord)item;
                 arItem.SetIsLoaded(true);
                 arItem.SetIsNew(false);
+            }
 
+            if (_onItemCreated != null)
+            {
+                _onItemCreated(item);
             }
         }
 

@@ -21,6 +21,7 @@ using SubSonic.DataProviders;
 using SubSonic.Query;
 using SubSonic.Schema;
 using SubSonic.Linq.Structure;
+using System.Collections;
 
 namespace SubSonic.Repository
 {
@@ -48,7 +49,7 @@ namespace SubSonic.Repository
             _provider = provider;
             
             // TODO: Hacky!
-            _provider.Mapper.OnItemCreated(x => { });
+            _provider.Mapper.OnItemCreated(x => AuotoLoadCollection(x));
 
             _options = options;
 
@@ -56,6 +57,34 @@ namespace SubSonic.Repository
                 migrated = new List<Type>();
         }
 
+        private void AuotoLoadCollection(object x)
+        {
+            var table = _provider.FindOrCreateTable(x.GetType());
+
+            var t = x.GetType();
+            var props = t.GetProperties();
+            
+            foreach (var prop in props)
+            {
+                if (prop.PropertyType.IsGenericType)
+                {
+                    var listGeneric = typeof(AutoloadedList<>).MakeGenericType(prop.PropertyType.GetGenericArguments()[0]);
+
+                    if (prop.PropertyType.IsAssignableFrom(listGeneric))
+                    {
+                        var propTable = _provider.FindOrCreateTable(prop.PropertyType.GetGenericArguments()[0]);
+
+                        // TODO: invert logic -> use Attribute on List, more flexible way!
+                        var foreignKeyColumn = propTable.Columns.SingleOrDefault(c => c.IsForeignKey);
+
+                        var keyValue = t.GetProperty(table.PrimaryKey.Name).GetValue(x, null);
+
+                        var listInstance = Activator.CreateInstance(listGeneric, this, _provider, foreignKeyColumn, keyValue);
+                        prop.SetValue(x, listInstance, null);
+                    }
+                }
+            }
+        }
 
         #region IRepository Members
 

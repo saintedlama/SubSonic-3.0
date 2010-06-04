@@ -14,6 +14,7 @@
 using System;
 using System.Data;
 using SubSonic.Schema;
+using System.Linq.Expressions;
 
 namespace SubSonic.SqlGeneration.Schema
 {
@@ -172,6 +173,26 @@ namespace SubSonic.SqlGeneration.Schema
         public void Apply(IColumn column)
         {
             column.DefaultSetting = DefaultSetting;
+        }
+    }
+
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class SubSonicForeignKeyAttribute : Attribute, IPropertyMappingAttribute
+    {
+        public SubSonicForeignKeyAttribute()
+        {
+            
+        }
+
+        public bool Accept(IColumn column)
+        {
+            return true;
+        }
+
+        public void Apply(IColumn column)
+        {
+            column.IsForeignKey = true;
         }
     }
 }

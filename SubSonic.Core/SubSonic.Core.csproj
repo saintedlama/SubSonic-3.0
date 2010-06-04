@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Linq\Translation\CountOrderByRemover.cs" />
+    <Compile Include="Repository\AutoloadedList.cs" />
     <Compile Include="Repository\DataMapper.cs" />
     <Compile Include="Repository\SimpleRepositoryOptions.cs" />
     <Compile Include="Repository\SimpleRepositoryOptionsExtensions.cs" />
