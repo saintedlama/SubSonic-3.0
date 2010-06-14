@@ -79,7 +79,7 @@ namespace SubSonic.Repository
 
                         var keyValue = t.GetProperty(table.PrimaryKey.Name).GetValue(x, null);
 
-                        var listInstance = Activator.CreateInstance(listGeneric, this, _provider, foreignKeyColumn, keyValue);
+                        var listInstance = Activator.CreateInstance(listGeneric, _provider, foreignKeyColumn, keyValue);
                         prop.SetValue(x, listInstance, null);
                     }
                 }

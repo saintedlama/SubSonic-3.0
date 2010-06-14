@@ -10,15 +10,13 @@ namespace SubSonic.Repository
 {
     public class AutoloadedList<T> : IList<T> where T : class, new()
     {
-        private SimpleRepository _repo;
         private List<T> _delegatee;
         private IColumn _foreignKey;
         private IDataProvider _provider;
         private object _key;
 
-        public AutoloadedList(SimpleRepository repo, IDataProvider provider, IColumn foreignKey, object key)
+        public AutoloadedList(IDataProvider provider, IColumn foreignKey, object key)
         {
-            _repo = repo;
             _foreignKey = foreignKey;
             _provider = provider;
             _key = key;
