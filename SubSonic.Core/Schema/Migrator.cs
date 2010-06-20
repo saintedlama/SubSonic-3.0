@@ -40,14 +40,15 @@ namespace SubSonic.Schema
             foreach(var c in existing.Columns)
             {
                 var colFound = source.GetColumn(c.Name);
-                if(colFound == null)
+                if (colFound == null || colFound.IsComputed)
                 {
                     //remove it
                     result.Add(source.DropColumnSql(c.Name));
                 }
             }
+
             //loop the existing table and add columns not found, update columns found...
-            foreach(var col in source.Columns)
+            foreach(var col in source.Columns.Where(c => !c.IsComputed))
             {
                 var colFound = existing.GetColumn(col.Name);
                 if(colFound == null)

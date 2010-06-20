@@ -12,6 +12,7 @@
 //   rights and limitations under the License.
 // 
 using System.Data;
+using System.Linq;
 using System.Text;
 using SubSonic.Extensions;
 using SubSonic.Schema;
@@ -93,7 +94,7 @@ namespace SubSonic.SqlGeneration.Schema
         {
             StringBuilder createSql = new StringBuilder();
 
-            foreach(IColumn col in table.Columns)
+            foreach(IColumn col in table.Columns.Where(c => !c.IsComputed))
                 createSql.AppendFormat("\r\n  `{0}`{1},", col.Name, GenerateColumnAttributes(col));
             string columnSql = createSql.ToString();
             return columnSql.Chop(",");

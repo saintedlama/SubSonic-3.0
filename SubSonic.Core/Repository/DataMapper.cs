@@ -12,9 +12,9 @@ namespace SubSonic.Repository
 {
     public class DataMapper
     {
-        private Action<object> _onItemCreated;
+        private Func<object, object> _onItemCreated;
 
-        public void OnItemCreated(Action<object> onItemCreated)
+        public void OnItemCreated(Func<object, object> onItemCreated)
         {
             _onItemCreated = onItemCreated;
         }
@@ -31,6 +31,12 @@ namespace SubSonic.Repository
             while (rdr.Read())
             {
                 T item = new T();
+
+                if (_onItemCreated != null)
+                {
+                    item = (T)_onItemCreated(item);
+                }
+
                 Load(rdr, item, null);//mike added null to match ColumnNames
                 result.Add(item);
             }
@@ -74,11 +80,19 @@ namespace SubSonic.Repository
                     result.Add(instance);
                 }
                 else
+                {
                     instance = Activator.CreateInstance<T>();
 
-                //do we have a parameterless constructor?
-                Load(rdr, instance, columnNames);//mike added ColumnNames
-                result.Add(instance);
+                    //do we have a parameterless constructor?
+                    Load(rdr, instance, columnNames);//mike added ColumnNames
+
+                    if (_onItemCreated != null)
+                    {
+                        instance = (T)_onItemCreated(instance);
+                    }
+
+                    result.Add(instance);   
+                }
             }
             return result.AsEnumerable();
         }
@@ -181,11 +195,6 @@ namespace SubSonic.Repository
                 var arItem = (IActiveRecord)item;
                 arItem.SetIsLoaded(true);
                 arItem.SetIsNew(false);
-            }
-
-            if (_onItemCreated != null)
-            {
-                _onItemCreated(item);
             }
         }
 

@@ -176,13 +176,12 @@ namespace SubSonic.SqlGeneration.Schema
         }
     }
 
-
     [AttributeUsage(AttributeTargets.Property)]
-    public class SubSonicForeignKeyAttribute : Attribute, IPropertyMappingAttribute
+    public class SubSonicReferencesAttribute : Attribute, IPropertyMappingAttribute
     {
-        public SubSonicForeignKeyAttribute()
+        public SubSonicReferencesAttribute()
         {
-            
+
         }
 
         public bool Accept(IColumn column)
@@ -192,7 +191,7 @@ namespace SubSonic.SqlGeneration.Schema
 
         public void Apply(IColumn column)
         {
-            column.IsForeignKey = true;
+            column.IsComputed = true;
         }
-    }
+    }   
 }

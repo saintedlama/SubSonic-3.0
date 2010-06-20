@@ -20,6 +20,8 @@ using System.Linq;
 using SubSonic.DataProviders;
 using SubSonic.Schema;
 using SubSonic.SqlGeneration.Schema;
+using System.Collections;
+using SubSonic.Repository;
 
 namespace SubSonic.Extensions
 {
@@ -138,27 +140,27 @@ namespace SubSonic.Extensions
 
         private static bool CanGenerateSchemaFor(Type type)
         {
-        	return type == typeof (string) ||
-        	       type == typeof (Guid) ||
-        	       type == typeof (Guid?) ||
-        	       type == typeof (decimal) ||
-        	       type == typeof (decimal?) ||
-        	       type == typeof (double) ||
-        	       type == typeof (double?) ||
-        	       type == typeof (DateTime) ||
-        	       type == typeof (DateTime?) ||
-        	       type == typeof (bool) ||
-        	       type == typeof (bool?) ||
-        	       type == typeof (Int16) ||
-        	       type == typeof (Int16?) ||
-        	       type == typeof (Int32) ||
-        	       type == typeof (Int32?) ||
-        	       type == typeof (Int64) ||
-        	       type == typeof (Int64?) ||
-        	       type == typeof (float?) ||
-        	       type == typeof (float) ||
+            return type == typeof(string) ||
+                   type == typeof(Guid) ||
+                   type == typeof(Guid?) ||
+                   type == typeof(decimal) ||
+                   type == typeof(decimal?) ||
+                   type == typeof(double) ||
+                   type == typeof(double?) ||
+                   type == typeof(DateTime) ||
+                   type == typeof(DateTime?) ||
+                   type == typeof(bool) ||
+                   type == typeof(bool?) ||
+                   type == typeof(Int16) ||
+                   type == typeof(Int16?) ||
+                   type == typeof(Int32) ||
+                   type == typeof(Int32?) ||
+                   type == typeof(Int64) ||
+                   type == typeof(Int64?) ||
+                   type == typeof(float?) ||
+                   type == typeof(float) ||
                    type == typeof(byte[]) ||
-        	       type.IsEnum || IsNullableEnum(type);
+                   type.IsEnum || IsNullableEnum(type) || true;
         }
 
     	internal static bool IsNullableEnum(Type type)

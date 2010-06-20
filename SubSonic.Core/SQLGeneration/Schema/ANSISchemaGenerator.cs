@@ -13,6 +13,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Data;
 using System.Data.Common;
 using System.Text;
@@ -139,7 +140,7 @@ namespace SubSonic.SqlGeneration.Schema
         {
             StringBuilder createSql = new StringBuilder();
 
-            foreach(IColumn col in table.Columns)
+            foreach(IColumn col in table.Columns.Where(c => !c.IsComputed))
                 createSql.AppendFormat("\r\n  [{0}]{1},", col.Name, GenerateColumnAttributes(col));
             string columnSql = createSql.ToString();
             return columnSql.Chop(",");

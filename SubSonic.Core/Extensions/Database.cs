@@ -174,7 +174,7 @@ namespace SubSonic.Extensions
                 foreach(string key in settings.Keys)
                 {
                     IColumn col = tbl.GetColumn(key);
-                    if(col != null)
+                    if(col != null && !col.IsComputed)
                     {
                         if(!col.IsPrimaryKey && !col.IsReadOnly)
                             query.Set(col).EqualTo(settings[key]);
@@ -212,7 +212,7 @@ namespace SubSonic.Extensions
                     IColumn col = tbl.GetColumn(key);
                     if(col != null)
                     {
-                        if(!col.AutoIncrement && !col.IsReadOnly && !(col.DefaultSetting != null && hashed[key] == null))
+                        if(!col.AutoIncrement && !col.IsReadOnly && !(col.DefaultSetting != null && hashed[key] == null) && !col.IsComputed)
                             query.Value(col.QualifiedName, hashed[key], col.DataType);
                     }
                 }

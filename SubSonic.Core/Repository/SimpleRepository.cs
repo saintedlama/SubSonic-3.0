@@ -22,6 +22,10 @@ using SubSonic.Query;
 using SubSonic.Schema;
 using SubSonic.Linq.Structure;
 using System.Collections;
+using LinFu.Proxy;
+using LinFu.Proxy.Interfaces;
+using LinFu.AOP.Interfaces;
+using LinFu.AOP.Cecil;
 
 namespace SubSonic.Repository
 {
@@ -30,7 +34,8 @@ namespace SubSonic.Repository
         private readonly IDataProvider _provider;
         private readonly List<Type> migrated;
         private readonly SimpleRepositoryOptions _options=SimpleRepositoryOptions.Default;
-        
+
+        private readonly ProxyFactory _factory = new ProxyFactory();
         public SimpleRepository() : this(ProviderFactory.GetProvider(),SimpleRepositoryOptions.Default) {}
 
         public SimpleRepository(string connectionStringName)
@@ -49,12 +54,22 @@ namespace SubSonic.Repository
             _provider = provider;
             
             // TODO: Hacky!
-            _provider.Mapper.OnItemCreated(x => AuotoLoadCollection(x));
+            //_provider.Mapper.OnItemCreated(x => AuotoLoadCollection(x));
+            _provider.Mapper.OnItemCreated(x => CreateDynamicProxy(x));
 
             _options = options;
 
             if (_options.Contains(SimpleRepositoryOptions.RunMigrations))
                 migrated = new List<Type>();
+        }
+
+        private object CreateDynamicProxy(object x)
+        {
+            var interceptor = new LacyLoadInterceptor(_provider, x);
+
+            var proxy = _factory.CreateProxy(x.GetType(), interceptor);
+
+            return proxy;
         }
 
         private void AuotoLoadCollection(object x)
@@ -368,6 +383,106 @@ namespace SubSonic.Repository
                     batch.QueueForTransaction(new QueryCommand(s, _provider));
                 batch.ExecuteTransaction();
                 migrated.Add(type);
+            }
+        }
+
+        public class LacyLoadInterceptor : IInterceptor
+        {
+            private object _target;
+            private IDataProvider _provider;
+
+            public LacyLoadInterceptor(IDataProvider provider, object target)
+            {
+                _target = target;
+                _provider = provider;
+            }
+
+            public object Intercept(IInvocationInfo info)
+            {
+                if (info.TargetMethod.Name.StartsWith("get_"))
+                {
+                    var propertyName = info.TargetMethod.Name.Substring(4, info.TargetMethod.Name.Length - 4);
+
+                    var t = _target.GetType();
+                    var table = _provider.FindOrCreateTable(t);
+                    var prop = t.GetProperty(propertyName);
+
+                    var col = table.GetColumn(propertyName);
+
+                    if (col.IsComputed)
+                    {
+                        if (prop.PropertyType.IsGenericType)
+                        {
+                            // TODO: Make safe...
+                            var referenceType = prop.PropertyType.GetGenericArguments()[0];
+                            var listGeneric = typeof(List<>).MakeGenericType(referenceType);
+
+                            if (prop.PropertyType.IsAssignableFrom(listGeneric))
+                            {
+                                var referenceTable = _provider.FindOrCreateTable(referenceType);
+
+                                // TODO: Add conventions to find the foreign key column
+                                var foreignKey = referenceTable.Columns.FirstOrDefault(c => c.Name.Equals(t.Name + "ID", StringComparison.InvariantCultureIgnoreCase) ||
+                                    c.Name.Equals("ID" + t.Name, StringComparison.InvariantCultureIgnoreCase));
+
+                                // TODO: null safe && safe in general!
+                                var key = t.GetProperty(table.PrimaryKey.Name).GetValue(_target, null);
+
+                                var select = new Select(_provider).From(foreignKey.Table).Where(foreignKey).IsEqualTo(key);
+
+                                var queryExecutorType = typeof(QueryExecutor<>).MakeGenericType(referenceType);
+                                var result = ((IQueryExecutor)Activator.CreateInstance(queryExecutorType)).Select(select);
+
+                                prop.SetValue(_target, result, null);
+                            }
+                        }
+                        else
+                        {
+                            // TODO: Make safe...
+                            var referenceType = prop.PropertyType;
+                            var referenceTable = _provider.FindOrCreateTable(referenceType);
+
+                            // TODO: Add conventions to find the foreign key column
+                            var foreignKey = referenceTable.Columns.FirstOrDefault(c => c.Name.Equals(t.Name + "ID", StringComparison.InvariantCultureIgnoreCase) ||
+                                c.Name.Equals("ID" + t.Name, StringComparison.InvariantCultureIgnoreCase));
+
+                            // TODO: null safe && safe in general!
+                            var key = t.GetProperty(table.PrimaryKey.Name).GetValue(_target, null);
+
+                            var select = new Select(_provider).From(foreignKey.Table).Where(foreignKey).IsEqualTo(key);
+
+                            var queryExecutorType = typeof(QueryExecutor<>).MakeGenericType(referenceType);
+                            var result = ((IQueryExecutor)Activator.CreateInstance(queryExecutorType)).Single(select);
+
+                            prop.SetValue(_target, result, null);
+                        }
+                    }
+                }
+
+                return info.TargetMethod.Invoke(_target, info.Arguments);
+            }
+        }
+
+        // TODO: Change the Interface that a single instance can be reused for one type!
+        private interface IQueryExecutor
+        {
+            IList Select(SqlQuery select);
+            object Single(SqlQuery select);
+        }
+
+        private class QueryExecutor<T> : IQueryExecutor where T : new()
+        {
+            public QueryExecutor()
+            {}
+
+            public IList Select(SqlQuery select)
+            {
+                return select.ExecuteTypedList<T>();
+            }
+
+            public object Single(SqlQuery select)
+            {
+                return select.ExecuteSingle<T>();
             }
         }
     }
