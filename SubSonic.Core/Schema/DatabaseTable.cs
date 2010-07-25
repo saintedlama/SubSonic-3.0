@@ -37,13 +37,13 @@ namespace SubSonic.Schema
         public DatabaseTable(string schema, string name, IDataProvider provider) :
             this(schema, name, provider, null) {}
 
-        public DatabaseTable(string schema, string name, IDataProvider provider, string classname)
+        public DatabaseTable(string schema, string name, IDataProvider provider, string classname) 
+            : this()
         {
             _provider = provider;
             Name = name;
             SchemaName = schema;
             ClassName = classname;
-            Columns = new List<IColumn>();
         }
 
         public IColumn[] PrimaryKeys
@@ -101,6 +101,38 @@ namespace SubSonic.Schema
         }
 
         public IList<IColumn> Columns { get; set; }
+
+        private IRelation[] _relations;
+        
+        public IEnumerable<IRelation> Relations 
+        {
+            get 
+            {
+                if (_relations == null)
+                {
+                    _relations = _relationFuncs.Select(x => x()).ToArray();
+                }
+
+                return _relations; 
+            } 
+        }
+
+        public bool HasRelations
+        {
+            get { return Relations.FirstOrDefault() != null; }
+        }
+
+        private List<Func<IRelation>> _relationFuncs = new List<Func<IRelation>>();
+
+        public void AddRelation(Func<IRelation> relation)
+        {
+            _relationFuncs.Add(relation);
+        }
+
+        public IRelation GetRelation(string relationName)
+        {
+            return Relations.Where(r => r.Name.Matches(relationName)).SingleOrDefault();
+        }
 
         public IColumn GetColumn(string ColumnName)
         {
